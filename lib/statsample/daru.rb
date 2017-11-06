@@ -5,13 +5,14 @@ module Daru
     def histogram(bins=10)
       type == :numeric or raise TypeError, "Only numeric Vectors can do this operation."
 
+      valid = reject_values(*Daru::MISSING_VALUES)
+
       if bins.is_a? Array
         h = Statsample::Histogram.alloc(bins)
       else
         # ugly patch. The upper limit for a bin has the form
         # x < range
         #h=Statsample::Histogram.new(self, bins)
-        valid = reject_values(*Daru::MISSING_VALUES)
         min,max=Statsample::Util.nice(valid.min,valid.max)
         # fix last data
         if max == valid.max
